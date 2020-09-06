@@ -4,6 +4,7 @@
 #include <math.h>
 #include "skip_list.h"
 
+void input();
 int add(int element);
 int remove_node(int element);
 void clear();
@@ -19,8 +20,22 @@ skip_list* list;
 
 int main(void) {
 	initialize();
+	input();
+	reBalance();
 	clear();
   return 0;
+}
+
+void input() {
+	FILE* fp = fopen("input.txt", "r");
+	int temp;
+
+	for(int i = 0; i < 10000; i++) { 
+		fscanf(fp, "%d", &temp);
+		add(temp);
+	}
+
+	fclose(fp);
 }
 
 int add(int element) {
@@ -98,8 +113,13 @@ int isEmpty() {
 }
 
 void clear() {
-	for(int i = 0; i < list->size; i++) {
-		remove_node(int element)
+	skip_node* current = list->head;
+	skip_node* next = current->nodes[0];
+
+	while (next != NULL) {
+		remove_node(current->value);
+		current = next;
+		next = current->nodes[0];
 	}
 }
 
@@ -164,7 +184,7 @@ int random_level() {
 void reBalance() {
 	skip_node* current = list->head;
 	skip_node* next = current->nodes[0];
-	skip_node** previous;
+	skip_node** previous = malloc(sizeof(skip_node) * list->maximum_level);
 
 	for (int i = 0; i <= list->maximum_level; i++)
 		previous[i] = current;
@@ -178,7 +198,7 @@ void reBalance() {
 		level = random_level();
 		original_level = current->level;
 
-		if (current-> level < level) {
+		if (current->level < level) {
 			current->level = level;
 
 			for (int i = original_level; i < level; i++)
@@ -187,7 +207,7 @@ void reBalance() {
 			while (list->maximum_level < level) {
 				list->maximum_level++;
 				list->head->nodes[list->maximum_level] = NULL;
-				previous[list->maximum_level] = NULL;
+				previous[list->maximum_level] = search_same_level(current->value, list->head, list->maximum_level);
 			}
 
 			do {
@@ -224,15 +244,15 @@ void reBalance() {
 		list->head->nodes[head_level] = NULL;
 		head_level--;
 	}
+
+	free(previous);
 }
 
 void initialize() {
-	list = NULL;
-	list->head = NULL;
-	list->head->nodes[0] = NULL;
-
 	list = (skip_list*) malloc(sizeof(skip_list));
 	list->head = (skip_node*) malloc(sizeof(skip_node));
+
+	list->head->nodes[0] = NULL;
 
 	list->size = 0;
 	list->maximum_level = 0;

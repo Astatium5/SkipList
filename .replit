@@ -1,0 +1,2 @@
+language = "C"
+run = "gcc -o skip_list skip_list.c -lm; ./skip_list"
