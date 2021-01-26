@@ -23,7 +23,7 @@ int main(void) {
 	input();
 	reBalance();
 	clear();
-  return 0;
+  	return 0;
 }
 
 void input() {
